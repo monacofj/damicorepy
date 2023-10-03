@@ -47,7 +47,8 @@ def get_compressor(name, level=6, model_order=6, memory=10,
   if name == 'bzip2':
     return Bzip2(level)
   if name == 'ppmd':
-    return Ppmd(model_order, memory, restoration_method, tmp_dir)
+    #return Ppmd(model_order, memory, restoration_method, tmp_dir)
+    return Ppmd(tmp_dir)
   if name == 'paq8':
     return Paq8(model_order, tmp_dir)
 
