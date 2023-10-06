@@ -171,16 +171,24 @@ else:
   logger.debug('bzip2 executable not available')
     
 #### PPMd executable
-if which('ppmd', ['../ppmdi2']):
+#
+# The PPMD implementation (ppmdi2) originally used by Bruno Kim allowed 
+# the user speficy PPM's model order and memory constraints. While we
+# are unable to retrieve that piece of sofware, we are using ppmd-ccfi
+# implementation by Hiroshi Miura (https://github.com/miurahr)
+# Extra parameters used by ppmdi2 were left unremoved as a provision
+# in case we decide to move back to it in a future release.
+
+if which('ppmd', ['../ppmdi2']):  
   class Ppmd(Compressor):
     """Compressor using the ppmd executable."""
     def __init__(self, model_order=6, memory=10, restoration_method="restart",
         tmp_dir=tempfile.gettempdir()):
       Compressor.__init__(self, 'ppmd')
       self.path = which('ppmd', ['../ppmdi2'])
-      self.model_order = model_order
       self.tmp_dir = tmp_dir
-      self.memory = memory
+      self.model_order = 6
+      self.memory = 6 # Verify why using memory_order here does not work
 
       method_map = {'restart': 0, 'cutoff': 1, 'freeze': 2}
       self.restoration_method = method_map.get(restoration_method, 0)
@@ -189,13 +197,19 @@ if which('ppmd', ['../ppmdi2']):
       tmpname = tempfile.mktemp(prefix=str(datasrc.name), dir=self.tmp_dir)
 
       with open(os.devnull, 'w') as devnull:
-        call([self.path, 'e',  '-o%d' %  self.model_order, '-f%s' % tmpname,
-          '-m%d' % self.memory, '-r%d' % self.restoration_method,
-          datasrc.get_filename()], stdout=devnull)
-      size = os.path.getsize(tmpname)
-      os.remove(tmpname)
-
-      return size
+        
+        # Call ppmdi2 (this version uses ppmd-cffi instead)
+        # 
+        # call([self.path, 'e',  '-o%d' %  self.model_order, '-f%s' % tmpname,
+        #   '-m%d' % self.memory, '-r%d' % self.restoration_method,
+        #   datasrc.get_filename()], stdout=devnull)
+        
+        call([self.path, datasrc.get_filename()], stdout=devnull)
+        os.rename(datasrc.get_filename() + ".ppmd", tmpname)        
+        size = os.path.getsize(tmpname)
+        os.remove(tmpname)
+        return size
+    
   available.add('ppmd')
 else:
   logger = logging.getLogger(__name__)

@@ -61,6 +61,12 @@ def ppmd_compression(fname, model_order = 6,
   """
   tmp_fname = os.path.join(ppmd_tmp_dir, os.path.basename(fname))
 
+  ### DEBUG
+  print("-----")
+  print(model_order)
+  print("-----")
+  sys.exit()
+  
   with open(os.devnull, 'w') as devnull:
     call(['ppmd', 'e', '-o%d' % model_order, '-f%s' % tmp_fname, fname],
         stdout=devnull)
