@@ -302,10 +302,10 @@ def _pipeline(ncd_results,
     sys.stderr.write('Clustering elements...\n')
   g = to_graph(tree)
       
-  #membership, clustering, dendrogram = tree_clustering(g, ids,
-  #    is_normalize_weights=is_normalize_weights,
-  #    num_clusters=num_clusters,
-  #    community_detection_name=community_detection_name)
+  membership, clustering, dendrogram = tree_clustering(g, ids,
+      is_normalize_weights=is_normalize_weights,
+      num_clusters=num_clusters,
+      community_detection_name=community_detection_name)
  
   return {
       'ncd_results': ncd_results,
