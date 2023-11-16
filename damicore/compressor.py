@@ -205,11 +205,11 @@ if which('ppmd', ['../ppmdi2']):
         #   datasrc.get_filename()], stdout=devnull)
         
         call([self.path, datasrc.get_filename()], stdout=devnull)
-        os.rename(datasrc.get_filename() + ".ppmd", tmpname)        
-        size = os.path.getsize(tmpname)
+        #os.rename(datasrc.get_filename() + ".ppmd", tmpname)        
+        #size = os.path.getsize(tmpname)
         size = os.path.getsize(datasrc.get_filename() + ".ppmd")
         os.remove(datasrc.get_filename() + ".ppmd")
-        os.remove(tmpname)
+        #os.remove(tmpname)
         return size
     
   available.add('ppmd')
